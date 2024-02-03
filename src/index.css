@@ -14,13 +14,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #f1f1f1;
+  background-color: #fff;
 }
 
 /* Scrollbar Thumb */
 ::-webkit-scrollbar-thumb {
-  background-color: #d9d0d0;
+  background-color: #dee1e4;
   border-radius: 5px;
+  width:"1rem"
 }
 
 /* Scrollbar Thumb on Hover */
@@ -29,6 +30,6 @@
 }
 
 ::-webkit-scrollbar {
-  width: 0.1em;
+  width: 0.1px;
   height: 0.4em;
 }

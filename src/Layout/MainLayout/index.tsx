@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { styled, useTheme } from '@mui/material/styles';
@@ -14,7 +15,6 @@ import { getCustomizationState, setOpenDrawerAction } from "Themes/Reducer/custo
 
 import { drawerWidth } from 'Services/Store/GridConstant';
 import { useAppDispatch, useAppSelector } from "Services/Hook/Hook";
-
 
 export const MainLayout = () => {
   const theme = useTheme();
@@ -46,8 +46,8 @@ export const MainLayout = () => {
     ),
     [theme.breakpoints.up('md')]: {
       marginLeft: leftDrawerOpened ? 0 : -(drawerWidth - 20),
-      width: `calc(100% - ${drawerWidth}px)`,
-      // width: leftDrawerOpened ? '100%' : `calc(100% - ${drawerWidth}px)`
+      // width: `calc(100% - ${drawerWidth}px)`,
+      width: leftDrawerOpened ? `calc(100% - ${drawerWidth}px)` : '100%'
     },
     [theme.breakpoints.down('md')]: {
       marginLeft: '20px',
@@ -56,12 +56,14 @@ export const MainLayout = () => {
     },
     [theme.breakpoints.down('sm')]: {
       marginLeft: '10px',
-      width: `calc(100% - ${drawerWidth}px)`,
+      width: `100%`,
       padding: '16px',
-      marginRight: '10px'
     }
   }));
 
+  const content = useMemo(() => {
+    return <Breadcrumbs separator={KeyboardArrowRightIcon} navigation={navigation} icon title rightAlign />
+  }, [document.location.pathname])
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -87,7 +89,7 @@ export const MainLayout = () => {
 
       {/* main content */}
       <Main theme={theme} >
-        <Breadcrumbs separator={KeyboardArrowRightIcon} navigation={navigation} icon title rightAlign />
+        {content}
         <Outlet />
       </Main>
 

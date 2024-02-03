@@ -1,4 +1,4 @@
-import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
+import { SpeedDial, SpeedDialIcon, SpeedDialAction, Box } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 
 import EditIcon from '@mui/icons-material/Edit';
@@ -23,13 +23,9 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
     const theme = useTheme();
 
     const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
-        position: 'absolute',
-        top: '10%',
-        right: 0,
-        transform: 'translateY(-50%)',
+        position: 'relative',
         '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
-            bottom: theme.spacing(2),
-            right: theme.spacing(2),
+            right: theme.spacing(1),
         },
         '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
             top: theme.spacing(2),
@@ -39,16 +35,14 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
 
     return (
         <>
-            {/* <Box sx={{ transform: 'translateZ(0px)', position: 'relative', height: 320 }}> */}
             <StyledSpeedDial
                 ariaLabel="SpeedDial openIcon example"
                 sx={{
                     '& .MuiFab-primary':
                     {
-                        width: 45, height: 45,
+                        width: 80, height: 40,
                         '& .MuiSpeedDialIcon-icon': { fontSize: 20 }, borderRadius: "2%", backgroundColor: theme.palette.secondary.dark
                     },
-                    height: "45px",
                 }}
                 icon={<SpeedDialIcon openIcon={<EditIcon />} />}
                 direction={direction}
@@ -59,6 +53,7 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
                         key={key}
                         icon={action?.icon || <SaveIcon />}
                         tooltipTitle={action.name}
+                        disableHoverListener={action?.disable}
                         onClick={(e) => {
                             if (action?.disable === true) { e.stopPropagation(); }
                             else {
@@ -67,13 +62,12 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
                             }
                         }}
                         sx={{
-                            width: 45, height: 45, borderRadius: "2%",
+                            width: 40, height: 40, borderRadius: "2%", boxShadow: 'none',
                             background: theme.palette.secondary.light, color: theme.palette?.[action.color || "secondary"].dark
                         }}
                     />
                 ))}
             </StyledSpeedDial>
-            {/* </Box> */}
         </>
     )
 }

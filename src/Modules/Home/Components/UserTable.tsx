@@ -1,12 +1,26 @@
 
-import { useMemo } from 'react';
-import { Box } from '@mui/material';
+import { useMemo, useEffect, useState } from 'react';
+import { Box, Typography } from '@mui/material';
 import { type MRT_ColumnDef } from 'material-react-table';
 
-import Table from 'Components/Table/Table';
+import { Table } from 'Components/Table/Table';
+import { TypeActions } from 'Components/Table/Components/TableActions';
+
 import { Employee } from '../Types/Types';
+import { data } from '../Components/makeData';
 
 export const UserTable = () => {
+    const [tableData, setTableData] = useState<Employee[]>([]);
+    const actions: TypeActions[] = [
+        { name: 'Copy', onClick: () => { console.log("copy"); } },
+        { name: 'Save' },
+        { name: 'Print' },
+        { name: 'Share' },
+    ];
+
+    const rowSelectionAction: TypeActions[] = [
+        { name: 'Delete', color: 'error' }
+    ];
 
     const columns = useMemo<MRT_ColumnDef<Employee>[]>(
         () => [
@@ -93,13 +107,57 @@ export const UserTable = () => {
                 },
             },
         ],
-        [],
-    );
+        [],);
 
+    useEffect(() => {
+        setTableData(data);
+        return () => { }
+    }, [data])
+
+    const getRowSelected = (name: string, data: any[]) => {
+        console.log(name, data);
+    }
+
+    const renderDetailPanel = (row: any) => {
+        return <Box
+            sx={{
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'space-around',
+                left: '30px',
+                maxWidth: '1000px',
+                position: 'sticky',
+                width: '100%',
+            }}
+        >
+            <img
+                alt="avatar"
+                height={100}
+                src={row.avatar}
+                loading="lazy"
+                style={{ borderRadius: '50%' }}
+            />
+            <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="h4">Signature Catch Phrase:</Typography>
+                <Typography variant="h1">&quot;{row.signatureCatchPhrase}&quot;</Typography>
+            </Box>
+        </Box>
+    }
 
     return (
         <>
-            <Table columns={columns} />
+            <Table
+                columns={columns}
+                data={tableData}
+                actions={actions}
+                rowSelectionAction={rowSelectionAction}
+                enableRowSelection={false}
+                enableExpanding={true}
+                getRowSelected={getRowSelected}
+                renderDetailPanel={renderDetailPanel}
+            />
         </>
     )
 }
+
+
