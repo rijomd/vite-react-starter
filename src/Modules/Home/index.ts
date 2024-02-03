@@ -5,7 +5,7 @@ const containers = {
     "reducer": homeSlice,
     "router": Routes,
     "moduleName": "Home",
-    "parentModuleName": "Home"
+    "parentModuleName": "Home",
 }
 
-export default containers
+export default containers;

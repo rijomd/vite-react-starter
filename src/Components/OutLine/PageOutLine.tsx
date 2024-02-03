@@ -3,8 +3,6 @@ import { styled, useTheme } from '@mui/material/styles';
 import { Typography, Link, Box, useMediaQuery } from '@mui/material';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
-import { PageActions, TypeActions } from "./PageActions";
-
 // import { getCustomizationState } from "Themes/Reducer/customizationActions";
 // import { useAppSelector } from "Services/Hook/Hook";
 
@@ -16,14 +14,11 @@ const Copyright = () => {
     );
 }
 
-export type pageActions = TypeActions;
-
 export type TypePageOutLine = {
     children?: React.ReactElement;
-    actions?: TypeActions[];
 }
 
-export const PageOutLine = ({ children, actions = [] }: TypePageOutLine) => {
+export const PageOutLine = ({ children }: TypePageOutLine) => {
     const theme = useTheme();
     // const customization = useAppSelector(getCustomizationState);
     const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
@@ -40,7 +35,6 @@ export const PageOutLine = ({ children, actions = [] }: TypePageOutLine) => {
     return (
         <PageWrapper>
             <PerfectScrollbar component="div">
-                <PageActions actions={actions} />
                 {children}
                 <Box sx={{ width: '100%', textAlign: 'center', marginTop: 1.5 }}>
                     <Copyright />

@@ -26,7 +26,7 @@ export const CustomizationForm = () => {
         // ...customization.background,
         <Grid container spacing={gridSpacing} sx={{ p: 3, background: theme.palette.primary.light }}>
             <Grid item xs={12} sx={{ height: '40px', display: 'flex', alignItems: 'center' }}>
-                <SettingsIcon color='secondary' />  <Typography color={theme.palette.secondary.dark} variant='h5' sx={{ pl: 1.25 }}> Settings </Typography>
+                <SettingsIcon color='secondary' />  <Typography variant='h5' sx={{ pl: 1.25 }}> Settings </Typography>
             </Grid>
             {/* font family */}
             <Grid item xs={12}>

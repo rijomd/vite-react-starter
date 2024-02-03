@@ -1,22 +1,15 @@
 import { Grid } from '@mui/material';
 
 import { gridSpacing } from "Services/Store/GridConstant";
-import { PageOutLine, pageActions } from "Components/OutLine/PageOutLine";
+import { PageOutLine } from "Components/OutLine/PageOutLine";
 
 
 import { UserTable } from "../Components/UserTable";
 
 const DashBoard = () => {
 
-    const actions: pageActions[] = [
-        { name: 'Copy' },
-        { name: 'Save' },
-        { name: 'Print' },
-        { name: 'Share' },
-    ];
-
-    return (
-        <PageOutLine actions={actions}>
+      return (
+        <PageOutLine >
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12}>
                     <UserTable />

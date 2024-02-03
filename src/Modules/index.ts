@@ -7,4 +7,4 @@ const containers: any = {
     home: home
 };
 
-export default containers
+export default containers;

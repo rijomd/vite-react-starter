@@ -28,8 +28,6 @@ export const GeneralRoutes = React.memo(() => {
   const customizationState = useAppSelector(getCustomizationState);
 
   const PrivateRoute: FC<PropType> = ({ component: Component, auth: Auth, }) => {
-    console.log("kk");
-
     if (Auth) {
       const data = getAuthToken();
       if (data) {

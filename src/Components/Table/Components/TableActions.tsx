@@ -12,19 +12,19 @@ export type TypeActions = {
     onClick?: () => void;
 }
 
-type TypePageActions = {
+type TypeTableActions = {
     direction?: 'up' | 'right' | 'down' | 'left';
     hidden?: boolean;
     onClick?: (data: string) => void;
     actions?: TypeActions[]
 }
 
-export const PageActions = ({ direction = 'down', hidden = false, onClick = () => { }, actions = [] }: TypePageActions) => {
+export const TableActions = ({ direction = 'left', hidden = false, onClick = () => { }, actions = [] }: TypeTableActions) => {
     const theme = useTheme();
 
     const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
         position: 'absolute',
-        top: '50%',
+        top: '10%',
         right: 0,
         transform: 'translateY(-50%)',
         '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
@@ -45,10 +45,10 @@ export const PageActions = ({ direction = 'down', hidden = false, onClick = () =
                 sx={{
                     '& .MuiFab-primary':
                     {
-                        width: 35, height: 35,
+                        width: 45, height: 45,
                         '& .MuiSpeedDialIcon-icon': { fontSize: 20 }, borderRadius: "2%", backgroundColor: theme.palette.secondary.dark
                     },
-                    height: "40px",
+                    height: "45px",
                 }}
                 icon={<SpeedDialIcon openIcon={<EditIcon />} />}
                 direction={direction}
@@ -67,7 +67,7 @@ export const PageActions = ({ direction = 'down', hidden = false, onClick = () =
                             }
                         }}
                         sx={{
-                            width: 35, height: 35, borderRadius: "2%",
+                            width: 45, height: 45, borderRadius: "2%",
                             background: theme.palette.secondary.light, color: theme.palette?.[action.color || "secondary"].dark
                         }}
                     />

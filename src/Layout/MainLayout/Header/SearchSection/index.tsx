@@ -67,6 +67,7 @@ const MobileSearch = ({ value, setValue = () => { }, popupState }: TypeMobileSea
       value={value}
       onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setValue(e.target.value)}
       placeholder="Search"
+      color='secondary'
       startAdornment={
         <InputAdornment position="start">
           <SearchIcon sx={{ color: theme.palette.primary.main[200] }} />
@@ -162,6 +163,7 @@ export const SearchSection = () => {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Search"
+          color='secondary'
           startAdornment={
             <InputAdornment position="start">
               <SearchIcon sx={{ color: theme.palette.primary.main[200] }} />
