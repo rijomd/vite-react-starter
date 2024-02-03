@@ -1,30 +1,32 @@
 import { ReactNode } from 'react';
 import {
-    MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton,
+    MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData,
 } from 'material-react-table';
 
-import { Box, ListItemIcon, MenuItem, lighten, } from '@mui/material';
-import { AccountCircle, Send } from '@mui/icons-material';
+import { Box, lighten, } from '@mui/material';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import { TableActions, TypeActions } from './Components/TableActions';
+import { MenuActions, TypeRowActions } from './Components/MenuActions';
 
 type TypeTable = {
     columns: any;
     data: any;
     actions?: TypeActions[];
     rowSelectionAction?: TypeActions[];
+    rowActions?: TypeRowActions[];
     enableRowSelection?: boolean;
     enableExpanding?: boolean;
-    getRowSelected?: (name: string, items: any[]) => void;
-    renderDetailPanel?: (data: any) => ReactNode | undefined;
+    getRowSelected?: (name: string, items: MRT_RowData[]) => void;
+    renderExpandPanel?: (data: any) => ReactNode | undefined;
+    getRowActions?: (name: string, item: MRT_RowData) => void;
 }
 
 export const Table = (props: TypeTable) => {
-    const { columns = [], data = [], actions = [], rowSelectionAction = [], enableRowSelection = false,
-        enableExpanding = false, getRowSelected = () => { }, renderDetailPanel = undefined } = props;
+    const { columns = [], data = [], actions = [], rowSelectionAction = [], rowActions = [], enableRowSelection = false,
+        enableExpanding = false, getRowActions = undefined, getRowSelected = () => { }, renderExpandPanel = undefined } = props;
 
 
     const table = useMaterialReactTable({
@@ -32,7 +34,7 @@ export const Table = (props: TypeTable) => {
         data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
         enableExpanding: enableExpanding,
         enableRowSelection: enableRowSelection,
-        enableRowActions: true,
+        enableRowActions: getRowActions !== undefined || typeof getRowActions === 'function',
         enableColumnFilterModes: true,
         enableColumnOrdering: true,
         enableGrouping: true,
@@ -41,11 +43,10 @@ export const Table = (props: TypeTable) => {
         enableColumnResizing: true,
         enableColumnDragging: true,
         initialState: {
-            showColumnFilters: true,
-            showGlobalFilter: true,
+            showColumnFilters: false,
+            showGlobalFilter: false,
             columnPinning: {
-                left: ['mrt-row-expand', 'mrt-row-select'],
-                right: ['mrt-row-actions'],
+                left: ['mrt-row-actions', 'mrt-row-expand', 'mrt-row-select',],
             },
         },
         paginationDisplayMode: 'pages',
@@ -61,37 +62,13 @@ export const Table = (props: TypeTable) => {
             shape: 'rounded',
             variant: 'outlined',
         },
-        renderDetailPanel: enableExpanding && renderDetailPanel ? ({ row }) => { return renderDetailPanel(row.original) } : undefined,
-        renderRowActionMenuItems: ({ closeMenu }) => [
-            <MenuItem
-                key={0}
-                onClick={
-                    () => {
-                        // View profile logic...
-                        closeMenu();
-                    }
-                }
-                sx={{ m: 0 }}
-            >
-                <ListItemIcon>
-                    <AccountCircle />
-                </ListItemIcon>
-                View Profile
-            </MenuItem >,
-            <MenuItem
-                key={1}
-                onClick={() => {
-                    // Send email logic...
-                    closeMenu();
-                }}
-                sx={{ m: 0 }}
-            >
-                <ListItemIcon>
-                    <Send />
-                </ListItemIcon>
-                Send Email
-            </MenuItem>,
-        ],
+        renderDetailPanel: enableExpanding && renderExpandPanel ? ({ row }) => { return renderExpandPanel(row.original) } : undefined,
+        renderRowActions: getRowActions && rowActions?.length > 0 ? ({ row }) => {
+            return <MenuActions
+                onClick={(name) => getRowActions(name, row.original)}
+                rowActions={rowActions}
+            />
+        } : undefined,
         renderTopToolbar: ({ table }) => {
             let selectedRows: any[] = [];
             if (table.getIsSomeRowsSelected() && enableRowSelection) {
@@ -99,7 +76,6 @@ export const Table = (props: TypeTable) => {
                     selectedRows.push(row.original)
                 });
             }
-
             return (
                 <Box
                     sx={(theme) => ({
@@ -125,7 +101,7 @@ export const Table = (props: TypeTable) => {
                     </Box>
                 </Box>
             );
-        },
+        }
     });
 
     return (<LocalizationProvider dateAdapter={AdapterDayjs}>

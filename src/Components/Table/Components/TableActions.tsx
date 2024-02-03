@@ -1,4 +1,5 @@
-import { SpeedDial, SpeedDialIcon, SpeedDialAction, Box } from '@mui/material';
+import { ReactNode } from 'react';
+import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,10 +17,11 @@ type TypeTableActions = {
     direction?: 'up' | 'right' | 'down' | 'left';
     hidden?: boolean;
     onClick?: (data: string) => void;
-    actions?: TypeActions[]
+    actions?: TypeActions[],
+    icon?: ReactNode
 }
 
-export const TableActions = ({ direction = 'left', hidden = false, onClick = () => { }, actions = [] }: TypeTableActions) => {
+export const TableActions = ({ direction = 'left', hidden = false, onClick = () => { }, actions = [], icon }: TypeTableActions) => {
     const theme = useTheme();
 
     const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
@@ -44,7 +46,7 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
                         '& .MuiSpeedDialIcon-icon': { fontSize: 20 }, borderRadius: "2%", backgroundColor: theme.palette.secondary.dark
                     },
                 }}
-                icon={<SpeedDialIcon openIcon={<EditIcon />} />}
+                icon={icon ? icon : <SpeedDialIcon openIcon={<EditIcon />} />}
                 direction={direction}
                 hidden={hidden}
             >
@@ -62,7 +64,7 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
                             }
                         }}
                         sx={{
-                            width: 40, height: 40, borderRadius: "2%", boxShadow: 'none',
+                            width: 50, height: 40, borderRadius: "2%", boxShadow: 'none',
                             background: theme.palette.secondary.light, color: theme.palette?.[action.color || "secondary"].dark
                         }}
                     />

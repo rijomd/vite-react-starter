@@ -1,10 +1,18 @@
 
 import { useMemo, useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import { type MRT_ColumnDef } from 'material-react-table';
+import { type MRT_ColumnDef, MRT_RowData } from 'material-react-table';
+
+import {
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+    Email as EmailIcon,
+    CopyAll as CopyAllIcon
+} from '@mui/icons-material';
 
 import { Table } from 'Components/Table/Table';
 import { TypeActions } from 'Components/Table/Components/TableActions';
+import { TypeRowActions } from 'Components/Table/Components/MenuActions';
 
 import { Employee } from '../Types/Types';
 import { data } from '../Components/makeData';
@@ -12,14 +20,18 @@ import { data } from '../Components/makeData';
 export const UserTable = () => {
     const [tableData, setTableData] = useState<Employee[]>([]);
     const actions: TypeActions[] = [
-        { name: 'Copy', onClick: () => { console.log("copy"); } },
-        { name: 'Save' },
-        { name: 'Print' },
-        { name: 'Share' },
+        { name: 'Copy', onClick: () => { console.log("copy"); }, icon: <CopyAllIcon /> },
+        { name: 'Save', color: 'success' },
+        { name: 'Print', icon: <EmailIcon />, color: 'info' },
     ];
 
     const rowSelectionAction: TypeActions[] = [
-        { name: 'Delete', color: 'error' }
+        { name: 'Delete', color: 'error', icon: <EditIcon /> }
+    ];
+
+    const rowActions: TypeRowActions[] = [
+        { name: 'Edit', icon: <EditIcon color='primary' />, label: 'Edit' },
+        { name: 'Delete', icon: <DeleteIcon color='error' />, label: 'Delete' }
     ];
 
     const columns = useMemo<MRT_ColumnDef<Employee>[]>(
@@ -114,11 +126,15 @@ export const UserTable = () => {
         return () => { }
     }, [data])
 
-    const getRowSelected = (name: string, data: any[]) => {
+    const getRowSelected = (name: string, data: MRT_RowData[]) => {
         console.log(name, data);
     }
 
-    const renderDetailPanel = (row: any) => {
+    const getRowActions = (name: string, data: MRT_RowData) => {
+        console.log(name, data);
+    }
+
+    const renderExpandPanel = (row: any) => {
         return <Box
             sx={{
                 alignItems: 'center',
@@ -151,10 +167,12 @@ export const UserTable = () => {
                 data={tableData}
                 actions={actions}
                 rowSelectionAction={rowSelectionAction}
-                enableRowSelection={false}
+                rowActions={rowActions}
+                enableRowSelection={true}
                 enableExpanding={true}
                 getRowSelected={getRowSelected}
-                renderDetailPanel={renderDetailPanel}
+                renderExpandPanel={renderExpandPanel}
+                getRowActions={getRowActions}
             />
         </>
     )
