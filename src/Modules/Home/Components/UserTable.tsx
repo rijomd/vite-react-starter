@@ -1,5 +1,5 @@
 
-import { useMemo, useEffect, useState } from 'react';
+import { useMemo, useEffect, useState, useCallback } from 'react';
 import { Box, Typography } from '@mui/material';
 import { type MRT_ColumnDef, MRT_RowData } from 'material-react-table';
 
@@ -13,26 +13,28 @@ import {
 import { Table } from 'Components/Table/Table';
 import { TypeActions } from 'Components/Table/Components/TableActions';
 import { TypeRowActions } from 'Components/Table/Components/MenuActions';
+import { TypeHeaderDetails } from 'Components/Table/Components/HideColumns';
 
 import { Employee } from '../Types/Types';
 import { data } from '../Components/makeData';
 
 export const UserTable = () => {
     const [tableData, setTableData] = useState<Employee[]>([]);
-    const actions: TypeActions[] = [
+
+    const actions = useMemo<TypeActions[]>(() => [
         { name: 'Copy', onClick: () => { console.log("copy"); }, icon: <CopyAllIcon /> },
         { name: 'Save', color: 'success' },
-        { name: 'Print', icon: <EmailIcon />, color: 'info' },
-    ];
+        { name: 'Print', icon: <EmailIcon />, color: 'warning' },
+    ], [])
 
-    const rowSelectionAction: TypeActions[] = [
+    const rowSelectionAction = useMemo<TypeActions[]>(() => [
         { name: 'Delete', color: 'error', icon: <EditIcon /> }
-    ];
+    ], [])
 
-    const rowActions: TypeRowActions[] = [
+    const rowActions = useMemo<TypeRowActions[]>(() => [
         { name: 'Edit', icon: <EditIcon color='primary' />, label: 'Edit' },
         { name: 'Delete', icon: <DeleteIcon color='error' />, label: 'Delete' }
-    ];
+    ], [])
 
     const columns = useMemo<MRT_ColumnDef<Employee>[]>(
         () => [
@@ -121,6 +123,42 @@ export const UserTable = () => {
         ],
         [],);
 
+    const hideColumns = useMemo<TypeHeaderDetails[]>(() => [
+        { name: 'jobTitle', label: 'Job Title', onChange: (value: boolean) => { console.log(value); } },
+        { name: 'email', label: 'Email', onChange: (value: boolean) => { console.log(value); } },
+        { name: 'startDate', label: 'Date', onChange: (value: boolean) => { console.log(value); } }
+    ], []);
+
+
+    const renderExpandPanel = useCallback(
+        (row: any) => {
+            return <Box
+                sx={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    justifyContent: 'space-around',
+                    left: '30px',
+                    maxWidth: '1000px',
+                    position: 'sticky',
+                    width: '100%',
+                }}
+            >
+                <img
+                    alt="avatar"
+                    height={100}
+                    src={row.avatar}
+                    loading="lazy"
+                    style={{ borderRadius: '50%' }}
+                />
+                <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="h4">Signature Catch Phrase:</Typography>
+                    <Typography variant="h1">&quot;{row.signatureCatchPhrase}&quot;</Typography>
+                </Box>
+            </Box>
+        },
+        [],)
+
+
     useEffect(() => {
         setTableData(data);
         return () => { }
@@ -132,32 +170,6 @@ export const UserTable = () => {
 
     const getRowActions = (name: string, data: MRT_RowData) => {
         console.log(name, data);
-    }
-
-    const renderExpandPanel = (row: any) => {
-        return <Box
-            sx={{
-                alignItems: 'center',
-                display: 'flex',
-                justifyContent: 'space-around',
-                left: '30px',
-                maxWidth: '1000px',
-                position: 'sticky',
-                width: '100%',
-            }}
-        >
-            <img
-                alt="avatar"
-                height={100}
-                src={row.avatar}
-                loading="lazy"
-                style={{ borderRadius: '50%' }}
-            />
-            <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="h4">Signature Catch Phrase:</Typography>
-                <Typography variant="h1">&quot;{row.signatureCatchPhrase}&quot;</Typography>
-            </Box>
-        </Box>
     }
 
     return (
@@ -173,6 +185,8 @@ export const UserTable = () => {
                 getRowSelected={getRowSelected}
                 renderExpandPanel={renderExpandPanel}
                 getRowActions={getRowActions}
+                hideColumns={hideColumns}
+            // hideColumns={{ email: false }}
             />
         </>
     )

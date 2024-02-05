@@ -18,7 +18,7 @@ export type TypePageOutLine = {
     children?: React.ReactElement;
 }
 
-export const PageOutLine = ({ children }: TypePageOutLine) => {
+export const MemorizedPageOutLine = ({ children }: TypePageOutLine) => {
     const theme = useTheme();
     // const customization = useAppSelector(getCustomizationState);
     const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
@@ -43,3 +43,5 @@ export const PageOutLine = ({ children }: TypePageOutLine) => {
         </PageWrapper>
     )
 }
+
+export const PageOutLine = React.memo(MemorizedPageOutLine);

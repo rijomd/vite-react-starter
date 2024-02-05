@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Card, Grid, Typography } from '@mui/material';
 import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
@@ -31,7 +31,7 @@ export type TypesBreadcrumbs = {
   titleBottom?: boolean
 }
 
-export const Breadcrumbs = (props: TypesBreadcrumbs) => {
+const MemorizedBreadcrumbs = (props: TypesBreadcrumbs) => {
   const { icon, icons, maxItems, navigation, rightAlign, separator, title, titleBottom } = props;
   const theme = useTheme();
 
@@ -119,13 +119,8 @@ export const Breadcrumbs = (props: TypesBreadcrumbs) => {
     // main
     if (item.breadcrumbs !== false) {
       breadcrumbContent = (
-        <Card
-          sx={{
-            marginBottom: "2px",
-            background: theme.palette.background.default
-          }}
-        >
-          <Box sx={{ p: 1 }}>
+        <Card sx={{ background: theme.palette.background.default }}>
+          <Box sx={{ pr: 1, pl: 1 }}>
             <Grid
               container
               direction={rightAlign ? 'row' : 'column'}
@@ -174,3 +169,4 @@ export const Breadcrumbs = (props: TypesBreadcrumbs) => {
 };
 
 
+export const Breadcrumbs = React.memo(MemorizedBreadcrumbs);

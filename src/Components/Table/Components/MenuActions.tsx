@@ -17,7 +17,7 @@ type TypeMenuActions = {
 }
 
 
-export const MenuActions = ({ onClick = () => { }, rowActions = [], }: TypeMenuActions) => {
+export const MemorizedMenuActions = ({ onClick = () => { }, rowActions = [], }: TypeMenuActions) => {
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -65,3 +65,5 @@ export const MenuActions = ({ onClick = () => { }, rowActions = [], }: TypeMenuA
         </Box>
     )
 }
+
+export const MenuActions = React.memo(MemorizedMenuActions);

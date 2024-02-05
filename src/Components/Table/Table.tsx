@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useMemo } from 'react';
 import {
     MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData,
 } from 'material-react-table';
@@ -10,6 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import { TableActions, TypeActions } from './Components/TableActions';
 import { MenuActions, TypeRowActions } from './Components/MenuActions';
+import { HideColumns, TypeHeaderDetails } from './Components/HideColumns';
 
 type TypeTable = {
     columns: any;
@@ -22,12 +23,13 @@ type TypeTable = {
     getRowSelected?: (name: string, items: MRT_RowData[]) => void;
     renderExpandPanel?: (data: any) => ReactNode | undefined;
     getRowActions?: (name: string, item: MRT_RowData) => void;
+    hideColumns?: TypeHeaderDetails[];
+    hideFields?: any;
 }
 
 export const Table = (props: TypeTable) => {
     const { columns = [], data = [], actions = [], rowSelectionAction = [], rowActions = [], enableRowSelection = false,
-        enableExpanding = false, getRowActions = undefined, getRowSelected = () => { }, renderExpandPanel = undefined } = props;
-
+        enableExpanding = false, getRowActions = undefined, getRowSelected = () => { }, renderExpandPanel = undefined, hideColumns = [], hideFields = {} } = props;
 
     const table = useMaterialReactTable({
         columns,
@@ -44,17 +46,20 @@ export const Table = (props: TypeTable) => {
         enableColumnDragging: true,
         initialState: {
             showColumnFilters: false,
-            showGlobalFilter: false,
+            showGlobalFilter: true,
+            density: 'compact',
             columnPinning: {
-                left: ['mrt-row-actions', 'mrt-row-expand', 'mrt-row-select',],
+                left: ['mrt-row-actions', 'mrt-row-expand', 'mrt-row-select'],
             },
+            columnVisibility: { ...hideFields }
         },
         paginationDisplayMode: 'pages',
         positionToolbarAlertBanner: 'bottom',
         muiSearchTextFieldProps: {
             size: 'small',
             variant: 'outlined',
-            color: 'secondary'
+            color: 'secondary',
+            sx: { background: '#fff' }
         },
         muiPaginationProps: {
             color: 'secondary',
@@ -63,12 +68,17 @@ export const Table = (props: TypeTable) => {
             variant: 'outlined',
         },
         renderDetailPanel: enableExpanding && renderExpandPanel ? ({ row }) => { return renderExpandPanel(row.original) } : undefined,
-        renderRowActions: getRowActions && rowActions?.length > 0 ? ({ row }) => {
-            return <MenuActions
-                onClick={(name) => getRowActions(name, row.original)}
-                rowActions={rowActions}
-            />
-        } : undefined,
+        renderRowActions: ({ row }) => {
+            if (getRowActions && rowActions?.length > 0) {
+                const MemorizedMenuAction = useMemo(() => (
+                    <MenuActions
+                        onClick={(name) => getRowActions(name, row.original)}
+                        rowActions={rowActions}
+                    />
+                ), [row.original]);
+                return MemorizedMenuAction;
+            }
+        },
         renderTopToolbar: ({ table }) => {
             let selectedRows: any[] = [];
             if (table.getIsSomeRowsSelected() && enableRowSelection) {
@@ -76,6 +86,18 @@ export const Table = (props: TypeTable) => {
                     selectedRows.push(row.original)
                 });
             }
+
+            const MemorizedTableAction = useMemo(() => (
+                <TableActions
+                    onClick={(name) => getRowSelected(name, selectedRows)}
+                    actions={enableRowSelection ? [...actions, ...rowSelectionAction] : actions}
+                />
+            ), []);
+
+            const MemorizedHideColumns = useMemo(() => (
+                <HideColumns headerDetails={hideColumns} />
+            ), []);
+
             return (
                 <Box
                     sx={(theme) => ({
@@ -92,12 +114,10 @@ export const Table = (props: TypeTable) => {
                         <MRT_ToggleFiltersButton table={table} />
                     </Box>
 
-                    <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+                    <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                         {/* table common  actions */}
-                        {actions?.length > 0 && <TableActions
-                            onClick={(name) => getRowSelected(name, selectedRows)}
-                            actions={enableRowSelection ? [...actions, ...rowSelectionAction] : actions}
-                        />}
+                        {actions?.length > 0 && MemorizedTableAction}
+                        {hideColumns?.length > 0 && MemorizedHideColumns}
                     </Box>
                 </Box>
             );

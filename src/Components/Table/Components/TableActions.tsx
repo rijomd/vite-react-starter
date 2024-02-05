@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { SpeedDial, SpeedDialIcon, SpeedDialAction } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 
@@ -21,9 +21,8 @@ type TypeTableActions = {
     icon?: ReactNode
 }
 
-export const TableActions = ({ direction = 'left', hidden = false, onClick = () => { }, actions = [], icon }: TypeTableActions) => {
+const MemorizedTableActions = ({ direction = 'left', hidden = false, onClick = () => { }, actions = [], icon }: TypeTableActions) => {
     const theme = useTheme();
-
     const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
         position: 'relative',
         '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
@@ -42,7 +41,7 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
                 sx={{
                     '& .MuiFab-primary':
                     {
-                        width: 80, height: 40,
+                        width: 65, height: 35,
                         '& .MuiSpeedDialIcon-icon': { fontSize: 20 }, borderRadius: "2%", backgroundColor: theme.palette.secondary.dark
                     },
                 }}
@@ -64,7 +63,7 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
                             }
                         }}
                         sx={{
-                            width: 50, height: 40, borderRadius: "2%", boxShadow: 'none',
+                            width: 50, height: 35, borderRadius: "2%", boxShadow: 'none',
                             background: theme.palette.secondary.light, color: theme.palette?.[action.color || "secondary"].dark
                         }}
                     />
@@ -73,3 +72,5 @@ export const TableActions = ({ direction = 'left', hidden = false, onClick = () 
         </>
     )
 }
+
+export const TableActions = React.memo(MemorizedTableActions);

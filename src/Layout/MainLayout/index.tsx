@@ -45,25 +45,27 @@ export const MainLayout = () => {
         }
     ),
     [theme.breakpoints.up('md')]: {
-      marginLeft: leftDrawerOpened ? 0 : -(drawerWidth - 20),
+      marginLeft: leftDrawerOpened ? 0 : -(drawerWidth),
       // width: `calc(100% - ${drawerWidth}px)`,
       width: leftDrawerOpened ? `calc(100% - ${drawerWidth}px)` : '100%'
     },
     [theme.breakpoints.down('md')]: {
-      marginLeft: '20px',
-      width: `calc(100% - ${drawerWidth}px)`,
+      // marginLeft: '20px',
+      width: leftDrawerOpened ? `calc(100% - ${drawerWidth}px)` : '100%',
       padding: '16px'
     },
     [theme.breakpoints.down('sm')]: {
-      marginLeft: '10px',
+      // marginLeft: '10px',
       width: `100%`,
       padding: '16px',
     }
   }));
 
-  const content = useMemo(() => {
-    return <Breadcrumbs separator={KeyboardArrowRightIcon} navigation={navigation} icon title rightAlign />
-  }, [document.location.pathname])
+  const content = useMemo(() => (<>
+    <Breadcrumbs separator={KeyboardArrowRightIcon} navigation={navigation} icon title rightAlign />
+    <Outlet />
+  </>
+  ), [document.location.pathname])
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -90,7 +92,6 @@ export const MainLayout = () => {
       {/* main content */}
       <Main theme={theme} >
         {content}
-        <Outlet />
       </Main>
 
       <Customization />
