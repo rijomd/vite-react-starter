@@ -1,9 +1,9 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo, useEffect, useState } from 'react';
 import {
-    MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData,
+    MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData ,MRT_ToggleDensePaddingButton
 } from 'material-react-table';
 
-import { Box, lighten, } from '@mui/material';
+import { Box, lighten } from '@mui/material';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -31,6 +31,12 @@ export const Table = (props: TypeTable) => {
     const { columns = [], data = [], actions = [], rowSelectionAction = [], rowActions = [], enableRowSelection = false,
         enableExpanding = false, getRowActions = undefined, getRowSelected = () => { }, renderExpandPanel = undefined, hideColumns = [], hideFields = {} } = props;
 
+    const [columnVisibility, setColumnVisibility] = useState(hideFields);
+
+    useEffect(() => {
+        setColumnVisibility(hideFields);
+    }, [Object.keys(hideFields)?.length]);
+
     const table = useMaterialReactTable({
         columns,
         data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
@@ -48,11 +54,10 @@ export const Table = (props: TypeTable) => {
             showColumnFilters: false,
             showGlobalFilter: true,
             density: 'compact',
-            columnPinning: {
-                left: ['mrt-row-actions', 'mrt-row-expand', 'mrt-row-select'],
-            },
-            columnVisibility: { ...hideFields }
         },
+        enableHiding: true,
+        state: { columnVisibility }, //manage columnVisibility state
+        onColumnVisibilityChange: setColumnVisibility,
         paginationDisplayMode: 'pages',
         positionToolbarAlertBanner: 'bottom',
         muiSearchTextFieldProps: {
@@ -94,10 +99,6 @@ export const Table = (props: TypeTable) => {
                 />
             ), []);
 
-            const MemorizedHideColumns = useMemo(() => (
-                <HideColumns headerDetails={hideColumns} />
-            ), []);
-
             return (
                 <Box
                     sx={(theme) => ({
@@ -112,12 +113,12 @@ export const Table = (props: TypeTable) => {
                     <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                         <MRT_GlobalFilterTextField table={table} />
                         <MRT_ToggleFiltersButton table={table} />
+                        <MRT_ToggleDensePaddingButton table={table} />
                     </Box>
 
                     <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                        {/* table common  actions */}
                         {actions?.length > 0 && MemorizedTableAction}
-                        {hideColumns?.length > 0 && MemorizedHideColumns}
+                        <HideColumns headerDetails={hideColumns} />
                     </Box>
                 </Box>
             );

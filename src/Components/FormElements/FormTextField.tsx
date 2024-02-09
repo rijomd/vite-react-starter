@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 import { TextField, InputAdornment } from '@mui/material';
 
-export type TextInterface = {
+export type TypeFormTextField = {
   label?: string;
   placeholder?: string;
   error?: { isError: boolean; errorMsg: string | undefined };
@@ -16,7 +16,7 @@ export type TextInterface = {
   [others: string]: any;
 }
 
-export const FormTextField: React.FC<TextInterface> = (props) => {
+export const FormTextField: React.FC<TypeFormTextField> = (props) => {
   const { label, placeholder, error, onChange = () => { }, value, required, type, fullWidth, name, endAdornment, startAdornment, ...others } = props;
 
   return (

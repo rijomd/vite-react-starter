@@ -2,14 +2,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { config } from "Services/Config/Config";
 
-export interface TypesCustomization {
+export type TypesCustomization = {
     isOpen: any[],
     defaultId: string,
     fontFamily: string,
     borderRadius: number
     opened: boolean,
     pageStyle: { [others: string]: any; },
-    mainOutlineStyle: { [others: string]: any; }
+    mainOutlineStyle: { [others: string]: any; },
+    navType: string
 }
 
 const initialState: TypesCustomization = {
@@ -19,7 +20,8 @@ const initialState: TypesCustomization = {
     borderRadius: config.borderRadius,
     opened: true,
     pageStyle: {},
-    mainOutlineStyle: {}
+    mainOutlineStyle: {},
+    navType: 'light'
 };
 
 export const customizationSlice = createSlice({

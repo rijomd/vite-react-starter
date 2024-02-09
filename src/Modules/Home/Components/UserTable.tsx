@@ -20,6 +20,7 @@ import { data } from '../Components/makeData';
 
 export const UserTable = () => {
     const [tableData, setTableData] = useState<Employee[]>([]);
+    const [hideFields, setHideFields] = useState<any>({});
 
     const actions = useMemo<TypeActions[]>(() => [
         { name: 'Copy', onClick: () => { console.log("copy"); }, icon: <CopyAllIcon /> },
@@ -106,7 +107,7 @@ export const UserTable = () => {
                 size: 350,
             },
             {
-                accessorFn: (row) => new Date(row.startDate),
+                accessorFn: (row) => row.startDate ? new Date(row.startDate) : "-",
                 id: 'startDate',
                 header: 'Start Date',
                 filterVariant: 'date',
@@ -123,12 +124,32 @@ export const UserTable = () => {
         ],
         [],);
 
-    const hideColumns = useMemo<TypeHeaderDetails[]>(() => [
-        { name: 'jobTitle', label: 'Job Title', onChange: (value: boolean) => { console.log(value); } },
-        { name: 'email', label: 'Email', onChange: (value: boolean) => { console.log(value); } },
-        { name: 'startDate', label: 'Date', onChange: (value: boolean) => { console.log(value); } }
-    ], []);
+    const hideColumnsActions = useCallback((name: string, value: boolean) => {
+        if (value) {
+            setHideFields({ ...hideFields, [name]: false });
+        }
+        else {
+            if (Object.keys(hideFields)?.length > 0) {
+                delete hideFields[name];
+                setHideFields({ ...hideFields });
+            }
+        }
+    }, [Object.keys(hideFields)?.length]);
 
+    const hideColumns = useMemo<TypeHeaderDetails[]>(() => [
+        {
+            name: 'jobTitle', label: 'Job Title', checked: (hideFields?.jobTitle === false),
+            onChange: (value: boolean) => { hideColumnsActions('jobTitle', value) }
+        },
+        {
+            name: 'email', label: 'Email', checked: (hideFields?.email === false),
+            onChange: (value: boolean) => { hideColumnsActions('email', value) }
+        },
+        {
+            name: 'startDate', label: 'Date', checked: (hideFields?.startDate === false),
+            onChange: (value: boolean) => { hideColumnsActions('startDate', value) }
+        }
+    ], [Object.keys(hideFields)?.length]);
 
     const renderExpandPanel = useCallback(
         (row: any) => {
@@ -155,8 +176,7 @@ export const UserTable = () => {
                     <Typography variant="h1">&quot;{row.signatureCatchPhrase}&quot;</Typography>
                 </Box>
             </Box>
-        },
-        [],)
+        }, [],)
 
 
     useEffect(() => {
@@ -186,7 +206,7 @@ export const UserTable = () => {
                 renderExpandPanel={renderExpandPanel}
                 getRowActions={getRowActions}
                 hideColumns={hideColumns}
-            // hideColumns={{ email: false }}
+                hideFields={hideFields}
             />
         </>
     )

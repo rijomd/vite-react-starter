@@ -5,6 +5,8 @@ import { styled, useTheme } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 
+import { config } from "Services/Config/Config";
+
 export type TypeActions = {
     disable?: boolean;
     icon?: any;
@@ -42,7 +44,7 @@ const MemorizedTableActions = ({ direction = 'left', hidden = false, onClick = (
                     '& .MuiFab-primary':
                     {
                         width: 65, height: 35,
-                        '& .MuiSpeedDialIcon-icon': { fontSize: 20 }, borderRadius: "2%", backgroundColor: theme.palette.secondary.dark
+                        '& .MuiSpeedDialIcon-icon': { fontSize: 20 }, borderRadius: `${config.borderRadius}px`, backgroundColor: theme.palette.secondary.dark
                     },
                 }}
                 icon={icon ? icon : <SpeedDialIcon openIcon={<EditIcon />} />}

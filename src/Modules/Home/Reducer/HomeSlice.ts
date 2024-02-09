@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export interface CounterState {
+export type CounterState = {
     isLoading: boolean;
 }
 

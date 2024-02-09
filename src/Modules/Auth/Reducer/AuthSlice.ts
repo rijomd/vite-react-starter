@@ -3,8 +3,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { loginAction } from "../Reducer/AuthAction";
 import { ACCESS_TOKEN, AUTH_USER } from "Services/Methods/AuthMethods";
 
-import { errorMessage ,successMessage } from "../Config/Constants";
-export interface CounterState {
+import { errorMessage, successMessage } from "../Config/Constants";
+export type CounterState = {
   auth: boolean;
   status: "idle" | "loading" | "success" | "failed";
   error: string | null | {};

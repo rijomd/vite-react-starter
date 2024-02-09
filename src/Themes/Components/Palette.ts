@@ -68,6 +68,6 @@ export default function ThemePalette(theme: any) {
     background: {
       paper: theme.paper,
       default: theme.backgroundDefault
-    }
+    },
   };
 }

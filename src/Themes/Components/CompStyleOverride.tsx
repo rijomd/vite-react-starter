@@ -1,6 +1,6 @@
 
 export default function ComponentStyleOverrides(theme: any) {
-  const bgColor = theme.colors?.grey50;
+  const bgColor = theme.colors?.paper;
   return {
     MuiButton: {
       styleOverrides: {
@@ -183,6 +183,29 @@ export default function ComponentStyleOverrides(theme: any) {
           background: theme.colors?.grey700
         }
       }
-    }
+    },
+    MuiSwitch: {
+      styleOverrides: {
+        thumb: {
+          color: theme.colors?.secondaryMain,
+        },
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          color: theme.colors?.grey,
+          '&.Mui-checked': {
+            color: theme.colors?.secondaryMain,
+          },
+          '&.Mui-disabled': {
+            color: theme.colors?.grey,
+          },
+          '&.MuiCheckbox-indeterminate': {
+            color: theme.colors?.secondaryMain, 
+          },
+        },
+      },
+    },
   };
 }

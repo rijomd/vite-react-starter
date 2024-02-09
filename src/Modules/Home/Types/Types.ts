@@ -5,7 +5,7 @@ export type Employee = {
     email: string;
     jobTitle: string;
     salary: number;
-    startDate: string;
+    startDate?: string;
     signatureCatchPhrase: string;
     avatar: string;
 };

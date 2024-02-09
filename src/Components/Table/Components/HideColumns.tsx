@@ -17,7 +17,6 @@ type TypeHideColumns = {
 }
 
 export const MemorizedHideColumns = ({ headerDetails = [] }: TypeHideColumns) => {
-
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -39,16 +38,25 @@ export const MemorizedHideColumns = ({ headerDetails = [] }: TypeHideColumns) =>
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                MenuListProps={{ 'aria-labelledby': 'basic-button', }}
             >
-                <MenuList onClick={handleClose}>
-                    <MenuItem >
-                        <Typography variant="h6" noWrap>Hide columns</Typography>
-                    </MenuItem>
+                <MenuList >
+                    <Box sx={{ display: 'block', textAlign: 'center', padding: '0px 16px' }}>
+                        <Typography variant="h5" noWrap>Hide columns</Typography>
+                        <Typography variant="h6" color='grey' sx={{ paddingBottom: '8px', fontSize: 10 }} >
+                            Selected columns will be <br />
+                            invisible in your list
+                        </Typography>
+                    </Box>
                     <Divider />
                     {headerDetails?.length > 0 && headerDetails.map((action: TypeHeaderDetails, key: number) => (
                         <MenuItem key={key}>
-                            <FormCheckBoxField label={action?.label} disabled={action.disabled} onChange={(e) => action.onChange(e.target.checked)} />
+                            <FormCheckBoxField
+                                label={action?.label}
+                                name={action?.name || action?.label}
+                                disabled={action.disabled}
+                                checked={action?.checked}
+                                onChange={(e) => action.onChange(e.target.checked)}
+                            />
                         </MenuItem>))}
                 </MenuList>
             </Menu>

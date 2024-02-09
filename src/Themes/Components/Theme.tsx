@@ -5,12 +5,9 @@ import ComponentStyleOverrides from './CompStyleOverride';
 import ThemePalette from './Palette';
 import ThemeTypography from './Typography';
 
-/**
- * Represent theme style and structure as per Material-UI
- * @param {JsonObject} customization customization parameter object
- */
+import { TypesCustomization } from '../Reducer/customizationSlice';
 
-export const Themes = (customization: any) => {
+export const Themes = (customization: TypesCustomization) => {
   const color = colors;
 
   const themeOption = {
@@ -38,7 +35,7 @@ export const Themes = (customization: any) => {
         '@media (min-width: 600px)': {
           minHeight: '48px'
         }
-      }
+      },
     },
     typography: ThemeTypography(themeOption)
   };
