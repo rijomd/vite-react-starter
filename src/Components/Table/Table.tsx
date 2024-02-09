@@ -3,7 +3,7 @@ import {
     MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData, MRT_ToggleDensePaddingButton
 } from 'material-react-table';
 
-import { Box, lighten } from '@mui/material';
+import { Box, lighten, useTheme, } from '@mui/material';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -31,7 +31,9 @@ export const Table = (props: TypeTable) => {
     const { columns = [], data = [], actions = [], rowSelectionAction = [], rowActions = [], enableRowSelection = false,
         enableExpanding = false, getRowActions = undefined, getRowSelected = () => { }, renderExpandPanel = undefined, hideColumns = [], hideFields = {} } = props;
 
+    const theme = useTheme();
     const [columnVisibility, setColumnVisibility] = useState(hideFields);
+    const baseBackgroundColor = theme.palette.mode === 'dark' ? 'rgba(3, 44, 43, 1)' : theme.palette.secondary.light;
 
     useEffect(() => {
         setColumnVisibility(hideFields);
@@ -70,6 +72,7 @@ export const Table = (props: TypeTable) => {
             sx: { background: '#fff' }
         },
         muiPaginationProps: {
+            SelectProps: { sx: {} },
             color: 'secondary',
             rowsPerPageOptions: [10, 20, 30, 50],
             shape: 'rounded',
@@ -125,7 +128,21 @@ export const Table = (props: TypeTable) => {
                     </Box>
                 </Box>
             );
-        }
+        },
+        // style for selected row background color
+        muiTableBodyProps: {
+            sx: () => ({
+                '& .MuiTableRow-root.Mui-selected, & tr[data-selected="true"]': {
+                    '& td': {
+                        backgroundColor: baseBackgroundColor,
+                        '&:after': {
+                            backgroundColor: baseBackgroundColor,
+                        },
+                    },
+                },
+            }),
+        },
+
     });
 
     return (<LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -133,7 +150,6 @@ export const Table = (props: TypeTable) => {
     </LocalizationProvider>)
 
 };
-
 
 // const keys = [
 //     'id',  // {id is still required when using accessorFn instead of accessorKey}   {string}
