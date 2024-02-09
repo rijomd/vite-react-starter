@@ -1,6 +1,6 @@
 import { ReactNode, useMemo, useEffect, useState } from 'react';
 import {
-    MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData ,MRT_ToggleDensePaddingButton
+    MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData, MRT_ToggleDensePaddingButton
 } from 'material-react-table';
 
 import { Box, lighten } from '@mui/material';
@@ -54,6 +54,9 @@ export const Table = (props: TypeTable) => {
             showColumnFilters: false,
             showGlobalFilter: true,
             density: 'compact',
+            columnPinning: {
+                right: ['mrt-row-actions'],
+            },
         },
         enableHiding: true,
         state: { columnVisibility }, //manage columnVisibility state
