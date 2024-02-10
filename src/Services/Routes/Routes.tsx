@@ -5,18 +5,20 @@ import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, StyledEngineProvider } from '@mui/material';
 
 import containers from "../../Modules";
-import { NavigationScroll } from "Layout/NavigationScroll";
-import { LazyLoader } from "Components/Loader/LazyLoader";
-import Themes from 'Themes/Components/Theme';
-
-import { useAppSelector } from "Services/Hook/Hook";
-import { getCustomizationState } from "Themes/Reducer/customizationActions";
-
 import { getAuthToken } from "../Methods/AuthMethods";
-import { config } from 'Services/Config/Config';
 
+import { NavigationScroll } from "Layout/NavigationScroll";
 import { AuthLayout } from 'Layout/AuthLayout';
 import { MainLayout } from 'Layout/MainLayout';
+
+import { LazyLoader } from "Components/Loader/LazyLoader";
+import { ErrorNotFound } from 'Components/Extend/ErrorNotFound';
+
+import Themes from 'Themes/Components/Theme';
+import { getCustomizationState } from "Themes/Reducer/customizationActions";
+
+import { useAppSelector } from "Services/Hook/Hook";
+import { config } from 'Services/Config/Config';
 
 type PropType = {
   component: React.FC;
@@ -30,9 +32,7 @@ export const GeneralRoutes = React.memo(() => {
   const PrivateRoute: FC<PropType> = ({ component: Component, auth: Auth, }) => {
     if (Auth) {
       const data = getAuthToken();
-      if (data) {
-        return <Component />;
-      }
+      if (data) { return <Component />; }
       else { return <Navigate to={`/login`} />; }
     }
     return <Component />;
@@ -52,23 +52,15 @@ export const GeneralRoutes = React.memo(() => {
         if (moduleName && elementPath) {
           const generated = lazy(() => import(`../../Modules/${moduleName}/Views/${elementPath}.tsx`));     /* @vite-ignore */
           element.push(
-            <Routes key={name}>
-              {item.path === "/login" &&
-                <Route element={<AuthLayout />}>
-                  <Route path={`/login`} element={<Login />} />
-                </Route>}
-              {item.path !== "/login" &&
-                <Route element={<MainLayout />}>
-                  <Route
-                    path={`${item.path}`}
-                    element={<PrivateRoute component={generated} auth={auth} />}
-                  />
-                </Route>}
-            </Routes>
+            <Route key={name} element={<MainLayout />}>
+              <Route
+                path={`${item.path}`}
+                element={<PrivateRoute component={generated} auth={auth} />}
+              />
+            </Route>
           );
         }
       }
-
     }
     return element;
   }, [window?.location?.pathname]);
@@ -79,9 +71,20 @@ export const GeneralRoutes = React.memo(() => {
         <ThemeProvider theme={Themes(customizationState)}>
           <CssBaseline />
           <NavigationScroll>
+
             <Suspense fallback={<LazyLoader />}>
-              {renderGeneratedRoutes}
+              <Routes>
+                <Route element={<AuthLayout />}>
+                  <Route path={`/login`} element={<Login />} />
+                </Route>
+                {renderGeneratedRoutes}
+                <Route element={<MainLayout />}>
+                  <Route path="*" element={<ErrorNotFound />} />
+                </Route>
+
+              </Routes>
             </Suspense>
+
           </NavigationScroll>
         </ThemeProvider>
       </StyledEngineProvider>
