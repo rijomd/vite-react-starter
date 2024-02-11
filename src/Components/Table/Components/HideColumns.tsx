@@ -16,7 +16,7 @@ type TypeHideColumns = {
     headerDetails: TypeHeaderDetails[];
 }
 
-export const MemorizedHideColumns = ({ headerDetails = [] }: TypeHideColumns) => {
+const MemorizedHideColumns = ({ headerDetails = [] }: TypeHideColumns) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -30,11 +30,11 @@ export const MemorizedHideColumns = ({ headerDetails = [] }: TypeHideColumns) =>
 
     return (
         <>
-            <FormButtonField onClick={handleClick} sx={{ width: 65, height: 35, alignItems: 'center' }} >
+            <FormButtonField onClick={handleClick} sx={{ width: 65, height: 35, alignItems: 'center' }} label='Hide Columns'>
                 <ListIcon />
             </FormButtonField>
             <Menu
-                id="basic-menu"
+                id="hide-columns"
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}

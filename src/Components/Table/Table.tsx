@@ -2,7 +2,6 @@ import { ReactNode, useMemo, useEffect, useState } from 'react';
 import {
     MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData, MRT_ToggleDensePaddingButton
 } from 'material-react-table';
-
 import { Box, lighten, useTheme, } from '@mui/material';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -11,6 +10,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { TableActions, TypeActions } from './Components/TableActions';
 import { MenuActions, TypeRowActions } from './Components/MenuActions';
 import { HideColumns, TypeHeaderDetails } from './Components/HideColumns';
+import { ExportActions } from './Components/ExportActions';
+
+import { useMobile } from 'Services/Hook/Hook';
 
 type TypeTable = {
     columns: any;
@@ -25,13 +27,18 @@ type TypeTable = {
     getRowActions?: (name: string, item: MRT_RowData) => void;
     hideColumns?: TypeHeaderDetails[];
     hideFields?: any;
+    isEnableExportFileName?: string;
+    exportOptionsField?: string[];
 }
 
 export const Table = (props: TypeTable) => {
     const { columns = [], data = [], actions = [], rowSelectionAction = [], rowActions = [], enableRowSelection = false,
-        enableExpanding = false, getRowActions = undefined, getRowSelected = () => { }, renderExpandPanel = undefined, hideColumns = [], hideFields = {} } = props;
+        enableExpanding = false, getRowActions = undefined, getRowSelected = () => { }, renderExpandPanel = undefined,
+        hideColumns = [], hideFields = {}, isEnableExportFileName, exportOptionsField = [] } = props;
 
     const theme = useTheme();
+    const isMobile = useMobile();
+
     const [columnVisibility, setColumnVisibility] = useState(hideFields);
     const baseBackgroundColor = theme.palette.mode === 'dark' ? 'rgba(3, 44, 43, 1)' : theme.palette.secondary.light;
 
@@ -63,7 +70,7 @@ export const Table = (props: TypeTable) => {
         enableHiding: true,
         state: { columnVisibility }, //manage columnVisibility state
         onColumnVisibilityChange: setColumnVisibility,
-        paginationDisplayMode: 'pages',
+        paginationDisplayMode: 'default',
         positionToolbarAlertBanner: 'bottom',
         muiSearchTextFieldProps: {
             size: 'small',
@@ -100,6 +107,7 @@ export const Table = (props: TypeTable) => {
 
             const MemorizedTableAction = useMemo(() => (
                 <TableActions
+                    direction={isMobile ? 'right' : 'left'}
                     onClick={(name) => getRowSelected(name, selectedRows)}
                     actions={enableRowSelection ? [...actions, ...rowSelectionAction] : actions}
                 />
@@ -116,15 +124,18 @@ export const Table = (props: TypeTable) => {
                     })}
                 >
                     {/* import MRT sub-components */}
-                    <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    {!isMobile && <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                         <MRT_GlobalFilterTextField table={table} />
                         <MRT_ToggleFiltersButton table={table} />
                         <MRT_ToggleDensePaddingButton table={table} />
-                    </Box>
+                    </Box>}
+
+                    {(actions?.length > 0 && isMobile) && MemorizedTableAction}
 
                     <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                        {actions?.length > 0 && MemorizedTableAction}
-                        <HideColumns headerDetails={hideColumns} />
+                        {(actions?.length > 0 && !isMobile) && MemorizedTableAction}
+                        {hideColumns?.length > 0 && <HideColumns headerDetails={hideColumns} />}
+                        {isEnableExportFileName && <ExportActions exportData={table} exportOptionsField={exportOptionsField} isEnableExportFileName={isEnableExportFileName} />}
                     </Box>
                 </Box>
             );

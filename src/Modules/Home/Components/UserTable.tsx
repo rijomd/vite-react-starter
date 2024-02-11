@@ -123,6 +123,7 @@ export const UserTable = () => {
             },
         ],
         [],);
+    const exportOptionsField = ['firstName', 'email', 'jobTitle']
 
     const hideColumnsActions = useCallback((name: string, value: boolean) => {
         if (value) {
@@ -207,6 +208,8 @@ export const UserTable = () => {
                 getRowActions={getRowActions}
                 hideColumns={hideColumns}
                 hideFields={hideFields}
+                exportOptionsField={exportOptionsField}
+                isEnableExportFileName='employee'
             />
         </>
     )

@@ -17,7 +17,7 @@ type TypeMenuActions = {
 }
 
 
-export const MemorizedMenuActions = ({ onClick = () => { }, rowActions = [], }: TypeMenuActions) => {
+const MemorizedMenuActions = ({ onClick = () => { }, rowActions = [], }: TypeMenuActions) => {
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
