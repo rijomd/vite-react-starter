@@ -70,7 +70,7 @@ export const Table = (props: TypeTable) => {
         enableHiding: true,
         state: { columnVisibility }, //manage columnVisibility state
         onColumnVisibilityChange: setColumnVisibility,
-        paginationDisplayMode: 'default',
+        paginationDisplayMode: 'pages',
         positionToolbarAlertBanner: 'bottom',
         muiSearchTextFieldProps: {
             size: 'small',
@@ -81,8 +81,8 @@ export const Table = (props: TypeTable) => {
         muiPaginationProps: {
             SelectProps: { sx: {} },
             color: 'secondary',
-            rowsPerPageOptions: [10, 20, 30, 50],
-            shape: 'rounded',
+            rowsPerPageOptions: [5, 10, 20, 30, 50, 75, 100],
+            shape: 'circular',
             variant: 'outlined',
         },
         renderDetailPanel: enableExpanding && renderExpandPanel ? ({ row }) => { return renderExpandPanel(row.original) } : undefined,

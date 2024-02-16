@@ -56,6 +56,7 @@ const MemorizedHideColumns = ({ headerDetails = [] }: TypeHideColumns) => {
                                 disabled={action.disabled}
                                 checked={action?.checked}
                                 onChange={(e) => action.onChange(e.target.checked)}
+                                isSmallIcon
                             />
                         </MenuItem>))}
                 </MenuList>

@@ -2,30 +2,32 @@ import React, { ChangeEvent } from "react";
 import { TextField, InputAdornment } from '@mui/material';
 
 export type TypeFormTextField = {
-  label?: string;
-  placeholder?: string;
-  error?: { isError: boolean; errorMsg: string | undefined };
+  name: string;
   value: string | number;
   onChange: (data: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => any;
+  label?: string;
+  placeholder?: string;
+  error?: { isError: boolean; errorMsg: string | any };
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => any;
   required?: boolean;
   type?: string;
-  fullWidth?: boolean;
-  name: string;
   endAdornment?: any;
   startAdornment?: any;
   [others: string]: any;
 }
 
 export const FormTextField: React.FC<TypeFormTextField> = (props) => {
-  const { label, placeholder, error, onChange = () => { }, value, required, type, fullWidth, name, endAdornment, startAdornment, ...others } = props;
+  const { label, placeholder, error, onChange, onBlur = () => { }, value, required, type, name, endAdornment, startAdornment, ...others } = props;
 
   return (
     <TextField
       variant="outlined"
       size="small"
-      color={"secondary"}
+      color="secondary"
+      id={`form-text-name-${name}`}
+      autoComplete='off'
       type={type}
-      fullWidth={fullWidth}
+      fullWidth={true}
       name={name}
       value={value}
       label={label}
@@ -34,6 +36,7 @@ export const FormTextField: React.FC<TypeFormTextField> = (props) => {
       error={error?.isError}
       helperText={error?.isError ? error.errorMsg : ""}
       onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange(e)}
+      onBlur={(e: React.FocusEvent<HTMLInputElement>) => { onBlur(e) }}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">

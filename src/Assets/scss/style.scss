@@ -5,7 +5,16 @@
 @import 'react-perfect-scrollbar/dist/css/styles.css';
 @import 'react-toastify/dist/ReactToastify.css';
 
+//  ===================== MRtable box shadow
+.css-ii7hn3-MuiPaper-root{
+  border-bottom: 1px #ccc solid;
+  box-shadow: none;
+}
 
+// ======================MUi Select options when selected
+.css-e276g8-MuiButtonBase-root-MuiMenuItem-root.Mui-selected{
+background-color: #ede7f6;
+}
 // ==============================|| LIGHT BOX ||============================== //
 .fullscreen .react-images__blanket {
   z-index: 1200;

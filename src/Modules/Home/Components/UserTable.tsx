@@ -1,13 +1,11 @@
 
-import { useMemo, useEffect, useState, useCallback } from 'react';
+import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import { Box, Typography } from '@mui/material';
 import { type MRT_ColumnDef, MRT_RowData } from 'material-react-table';
 
 import {
     Edit as EditIcon,
     Delete as DeleteIcon,
-    Email as EmailIcon,
-    CopyAll as CopyAllIcon
 } from '@mui/icons-material';
 
 import { Table } from 'Components/Table/Table';
@@ -18,18 +16,17 @@ import { TypeHeaderDetails } from 'Components/Table/Components/HideColumns';
 import { Employee } from '../Types/Types';
 import { data } from '../Components/makeData';
 
-export const UserTable = () => {
+export const MemorizedUserTable = ({ openAddForm }: { openAddForm: () => void }) => {
     const [tableData, setTableData] = useState<Employee[]>([]);
     const [hideFields, setHideFields] = useState<any>({});
 
     const actions = useMemo<TypeActions[]>(() => [
-        { name: 'Copy', onClick: () => { console.log("copy"); }, icon: <CopyAllIcon /> },
+        { name: 'Add', onClick: () => { openAddForm() }, icon: <EditIcon /> },
         { name: 'Save', color: 'success' },
-        { name: 'Print', icon: <EmailIcon />, color: 'warning' },
     ], [])
 
     const rowSelectionAction = useMemo<TypeActions[]>(() => [
-        { name: 'Delete', color: 'error', icon: <EditIcon /> }
+        { name: 'Delete', color: 'error', icon: <DeleteIcon /> }
     ], [])
 
     const rowActions = useMemo<TypeRowActions[]>(() => [
@@ -179,11 +176,10 @@ export const UserTable = () => {
             </Box>
         }, [],)
 
-
     useEffect(() => {
         setTableData(data);
         return () => { }
-    }, [data])
+    }, [])
 
     const getRowSelected = (name: string, data: MRT_RowData[]) => {
         console.log(name, data);
@@ -215,4 +211,4 @@ export const UserTable = () => {
     )
 }
 
-
+export const UserTable = React.memo(MemorizedUserTable);

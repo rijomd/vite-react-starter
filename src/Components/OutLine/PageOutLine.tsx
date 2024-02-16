@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import { Typography, Link, Box, useMediaQuery, Backdrop, Grid } from '@mui/material';
+import { Typography, Link, useMediaQuery, Backdrop, Grid, Divider } from '@mui/material';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // import { getCustomizationState } from "Themes/Reducer/customizationActions";
@@ -8,6 +8,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import { PageLoader } from 'Components/Loader/PageLoader';
 import { FormButtonField } from 'Components/FormElements/FormButtonField';
+
+import { gridSpacing } from 'Services/Store/GridConstant';
 
 const Copyright = () => {
     return (
@@ -30,9 +32,11 @@ type TypePageOutLine = {
     isLoading?: boolean;
     title?: string,
     actions?: TypeAction[];
+    draggableRef?: React.MutableRefObject<any>;
+    fullScreen?: boolean;
 }
 
-export const MemorizedPageOutLine = ({ children, isLoading = false, title, actions = [] }: TypePageOutLine) => {
+export const MemorizedPageOutLine = ({ children, isLoading = false, title, actions = [], draggableRef, fullScreen = false }: TypePageOutLine) => {
     const theme = useTheme();
     // const customization = useAppSelector(getCustomizationState);
     const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
@@ -42,7 +46,8 @@ export const MemorizedPageOutLine = ({ children, isLoading = false, title, actio
         position: 'relative',
         overflow: 'hidden',
         padding: '8px',
-        background: theme.palette.primary.light
+        background: theme.palette.primary.light,
+        minHeight: fullScreen ? '100vh' : '80vh',
         // ...customization.pageStyle,
     }));
 
@@ -56,34 +61,42 @@ export const MemorizedPageOutLine = ({ children, isLoading = false, title, actio
                     <PageLoader />
                 </Backdrop>
 
-                {title && <Grid container sx={{ alignItems: 'center', width: "100%", padding: '4px', background: "#fff" }}>
-                    <Grid item md={4} xs={12}>
-                        <Typography variant="h4" align="inherit" >{title}</Typography>
+                <Grid container sx={{ background: '#fff' }}  >
+                    {title && <Grid item md={12} xs={12}>
+                        <Grid container spacing={gridSpacing}
+                            sx={{ alignItems: 'center', cursor: draggableRef ? "move" : "default" }}
+                            ref={draggableRef}>
+                            <Grid item md={4} xs={12}>
+                                <Typography variant="h4" align="inherit" sx={{ margin: '4px' }}>{title}</Typography>
+                            </Grid>
+                            <Grid item md={8} xs={12} sx={{ textAlign: 'end' }}>
+                                {actions.length > 0 &&
+                                    actions.map((item, index) => {
+                                        return (
+                                            <FormButtonField
+                                                key={index}
+                                                fullWidth={false}
+                                                label={item.label}
+                                                disabled={item?.disabled}
+                                                onClick={() => item.onClick()}
+                                                color={item?.color}
+                                                sx={{ margin: '4px', textTransform: 'none' }}
+                                            >
+                                                {item.label + " "} {item?.icon}
+                                            </FormButtonField>
+                                        );
+                                    })}
+                            </Grid>
+                        </Grid>
+                        <Divider />
+                    </Grid>}
+                    <Grid item md={12} xs={12} >
+                        {children}
                     </Grid>
-                    <Grid item md={8} xs={12} sx={{ textAlign: 'end' }}>
-                        {actions.length > 0 &&
-                            actions.map((item, index) => {
-                                return (
-                                    <FormButtonField
-                                        key={index}
-                                        fullWidth={false}
-                                        disabled={item?.disabled}
-                                        onClick={() => item.onClick()}
-                                        color={item?.color}
-                                        sx={{ marginRight: '8px', textTransform: 'none' }}
-                                    >
-                                        {item.label + " "} {item?.icon}
-                                    </FormButtonField>
-                                );
-                            })}
+                    <Grid item md={12} xs={12} sx={{ textAlign: 'center', marginTop: 1.5 }}>
+                        <Copyright />
                     </Grid>
-                </Grid>}
-
-                {children}
-
-                <Box sx={{ width: '100%', textAlign: 'center', marginTop: 1.5 }}>
-                    <Copyright />
-                </Box>
+                </Grid>
             </PerfectScrollbar>
         </PageWrapper>
     )
