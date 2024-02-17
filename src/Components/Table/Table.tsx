@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useEffect, useState } from 'react';
+import React, { ReactNode, useMemo, useEffect, useState } from 'react';
 import {
     MaterialReactTable, useMaterialReactTable, MRT_GlobalFilterTextField, MRT_ToggleFiltersButton, MRT_RowData, MRT_ToggleDensePaddingButton
 } from 'material-react-table';
@@ -31,7 +31,7 @@ type TypeTable = {
     exportOptionsField?: string[];
 }
 
-export const Table = (props: TypeTable) => {
+export const MemorizedTable = (props: TypeTable) => {
     const { columns = [], data = [], actions = [], rowSelectionAction = [], rowActions = [], enableRowSelection = false,
         enableExpanding = false, getRowActions = undefined, getRowSelected = () => { }, renderExpandPanel = undefined,
         hideColumns = [], hideFields = {}, isEnableExportFileName, exportOptionsField = [] } = props;
@@ -161,6 +161,9 @@ export const Table = (props: TypeTable) => {
     </LocalizationProvider>)
 
 };
+
+export const Table = React.memo(MemorizedTable);
+
 
 // const keys = [
 //     'id',  // {id is still required when using accessorFn instead of accessorKey}   {string}

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Chip, Drawer, Stack, useMediaQuery } from '@mui/material';
 
@@ -16,7 +17,7 @@ type TypeSidebar = {
   window?: any
 }
 
-export const Sidebar = ({ drawerOpen, drawerToggle = () => { }, window }: TypeSidebar) => {
+export const MemorizedSidebar = ({ drawerOpen, drawerToggle = () => { }, window }: TypeSidebar) => {
   const theme = useTheme();
   const matchUpMd = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -84,3 +85,5 @@ export const Sidebar = ({ drawerOpen, drawerToggle = () => { }, window }: TypeSi
     </Box>
   );
 };
+
+export const Sidebar = React.memo(MemorizedSidebar);

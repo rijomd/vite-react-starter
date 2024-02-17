@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { styled, useTheme } from '@mui/material/styles';
@@ -16,6 +16,45 @@ import { getCustomizationState, setOpenDrawerAction } from "Themes/Reducer/custo
 import { drawerWidth } from 'Services/Store/GridConstant';
 import { useAppDispatch, useAppSelector } from "Services/Hook/Hook";
 
+const MainStyled = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, leftDrawerOpened }: { theme: any, leftDrawerOpened: boolean }) => ({
+  ...theme.typography.body1,
+  borderBottomLeftRadius: 0,
+  borderBottomRightRadius: 0,
+  marginTop: 88,
+  transition: theme.transitions.create(
+    'margin',
+    leftDrawerOpened
+      ? {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen
+      }
+      : {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen
+      }
+  ),
+  [theme.breakpoints.up('md')]: {
+    marginLeft: leftDrawerOpened ? 0 : -(drawerWidth),
+    width: leftDrawerOpened ? `calc(100% - ${drawerWidth}px)` : '100%'
+  },
+  [theme.breakpoints.down('md')]: {
+    width: leftDrawerOpened ? `calc(100% - ${drawerWidth}px)` : '100%',
+    padding: '16px'
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: `100%`,
+    padding: '16px',
+  }
+}));
+
+const Main = React.memo(({ leftDrawerOpened, content }: { leftDrawerOpened: boolean, content: React.ReactNode }) => {
+  return (
+    <MainStyled theme={useTheme()} leftDrawerOpened={leftDrawerOpened}>
+      {content}
+    </MainStyled>
+  );
+});
+
 export const MainLayout = () => {
   const theme = useTheme();
   const matchDownMd = useMediaQuery(theme.breakpoints.down('md'));
@@ -23,49 +62,20 @@ export const MainLayout = () => {
   const dispatch = useAppDispatch();
   const leftDrawerOpened = customization.opened;
 
-  const handleLeftDrawerToggle = () => {
+  const handleLeftDrawerToggle = useCallback(() => {
     dispatch(setOpenDrawerAction(!leftDrawerOpened));
-  };
+  }, [leftDrawerOpened])
 
-  const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme }) => ({
-    ...theme.typography.body1,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    marginTop: 88,
-    transition: theme.transitions.create(
-      'margin',
-      leftDrawerOpened
-        ? {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen
-        }
-        : {
-          easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.leavingScreen
-        }
-    ),
-    [theme.breakpoints.up('md')]: {
-      marginLeft: leftDrawerOpened ? 0 : -(drawerWidth),
-      // width: `calc(100% - ${drawerWidth}px)`,
-      width: leftDrawerOpened ? `calc(100% - ${drawerWidth}px)` : '100%'
-    },
-    [theme.breakpoints.down('md')]: {
-      // marginLeft: '20px',
-      width: leftDrawerOpened ? `calc(100% - ${drawerWidth}px)` : '100%',
-      padding: '16px'
-    },
-    [theme.breakpoints.down('sm')]: {
-      // marginLeft: '10px',
-      width: `100%`,
-      padding: '16px',
-    }
-  }));
+  const content = useMemo(() => {
+    return <>
+      <Breadcrumbs separator={KeyboardArrowRightIcon} navigation={navigation} icon title rightAlign />
+      <Outlet />
+    </>
+  }, [document.location.pathname])
 
-  const content = useMemo(() => (<>
-    <Breadcrumbs separator={KeyboardArrowRightIcon} navigation={navigation} icon title rightAlign />
-    <Outlet />
-  </>
-  ), [document.location.pathname])
+  const sideBar = useMemo(() => (
+    <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+  ), [leftDrawerOpened])
 
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
@@ -87,12 +97,9 @@ export const MainLayout = () => {
       </AppBar>
 
       {/* drawer */}
-      <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+      {sideBar}
 
-      {/* main content */}
-      <Main theme={theme} >
-        {content}
-      </Main>
+      <Main leftDrawerOpened={leftDrawerOpened} content={content} />
 
       <Customization />
     </Box>
