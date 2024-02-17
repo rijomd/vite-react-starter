@@ -70,7 +70,7 @@ export const Table = (props: TypeTable) => {
         enableHiding: true,
         state: { columnVisibility }, //manage columnVisibility state
         onColumnVisibilityChange: setColumnVisibility,
-        paginationDisplayMode: 'pages',
+        paginationDisplayMode: isMobile ? 'default' : 'pages',
         positionToolbarAlertBanner: 'bottom',
         muiSearchTextFieldProps: {
             size: 'small',
@@ -134,8 +134,8 @@ export const Table = (props: TypeTable) => {
 
                     <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                         {(actions?.length > 0 && !isMobile) && MemorizedTableAction}
-                        {hideColumns?.length > 0 && <HideColumns headerDetails={hideColumns} />}
-                        {isEnableExportFileName && <ExportActions exportData={table} exportOptionsField={exportOptionsField} isEnableExportFileName={isEnableExportFileName} />}
+                        {(hideColumns?.length > 0 && !isMobile) && <HideColumns headerDetails={hideColumns} />}
+                        {(isEnableExportFileName && !isMobile) && <ExportActions exportData={table} exportOptionsField={exportOptionsField} isEnableExportFileName={isEnableExportFileName} />}
                     </Box>
                 </Box>
             );

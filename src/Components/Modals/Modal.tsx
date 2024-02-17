@@ -4,7 +4,7 @@ import { Paper, Dialog } from "@mui/material";
 import { TransitionProps } from '@mui/material/transitions';
 import Draggable from "react-draggable";
 
-import { PageOutLine, TypeAction } from "Components/OutLine/PageOutLine";
+import { PageOutLine } from "Components/OutLine/PageOutLine";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -15,8 +15,6 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export type ModalAction = TypeAction;
-
 type TypeModal = {
     open: boolean;
     title: string;
@@ -25,12 +23,12 @@ type TypeModal = {
     handleClose?: () => void;
     disableBackgroundClose?: boolean;
     fullScreen?: boolean;
-    actions?: ModalAction[];
+    onAction?: (name: string) => void;
 }
 
 export const Modal = (props: TypeModal) => {
-    const { open, handleClose, title, children, maxWidth = 'md', actions = [],
-        fullScreen = false, disableBackgroundClose = false } = props;
+    const { open, handleClose, title, children, maxWidth = 'md',
+        fullScreen = false, disableBackgroundClose = false, onAction } = props;
 
     const draggableRef: React.MutableRefObject<any> = React.useRef(null);
 
@@ -55,7 +53,14 @@ export const Modal = (props: TypeModal) => {
             PaperComponent={PaperComponent}
             sx={{ borderRadius: 0 }}
         >
-            <PageOutLine fullScreen={fullScreen} title={title} actions={actions} draggableRef={draggableRef}>{children}</PageOutLine>
+            <PageOutLine
+                fullScreen={fullScreen}
+                title={title}
+                draggableRef={draggableRef}
+                onAction={onAction}
+            >
+                {children}
+            </PageOutLine>
         </Dialog >
     )
 }

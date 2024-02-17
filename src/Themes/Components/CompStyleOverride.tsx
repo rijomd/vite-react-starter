@@ -171,7 +171,8 @@ export default function ComponentStyleOverrides(theme: any) {
       styleOverrides: {
         root: {
           '&.MuiChip-deletable .MuiChip-deleteIcon': {
-            color: 'inherit'
+            color: 'inherit',
+            fontSize:'16px'
           }
         }
       }

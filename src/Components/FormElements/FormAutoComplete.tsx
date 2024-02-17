@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Autocomplete, TextField, Box } from "@mui/material";
+import { Autocomplete, TextField, Box, Chip } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 
 import { FormCheckBoxField } from './FormCheckBoxField';
@@ -66,6 +66,8 @@ export const FormAutoComplete = (props: TypeFormAutoComplete) => {
             disablePortal
             noOptionsText="No item found"
             autoHighlight
+            limitTags={2}
+            color="secondary"
             fullWidth={true}
             options={options}
             multiple={multiple || false}
@@ -76,7 +78,19 @@ export const FormAutoComplete = (props: TypeFormAutoComplete) => {
             onChange={(event: React.SyntheticEvent<Element, Event>, newValue) => handleChange(newValue)}
             onInputChange={(event: React.SyntheticEvent<Element, Event>, newInputValue) => setInputValue(newInputValue)}
             getOptionLabel={(option) => option?.label || ''}
-            color="secondary"
+            renderTags={(value, getTagProps) =>
+                value.map((option: any, index: number) => (
+                    <Chip
+                        label={option.label}
+                        {...getTagProps({ index })}
+                        sx={{
+                            fontSize:'.875rem',
+                            backgroundColor: theme.palette.secondary.dark,
+                            color: '#fff',
+                        }}
+                    />
+                ))
+            }
             renderInput={(params) => (
                 <TextField
                     {...params}
