@@ -44,8 +44,8 @@ export const UserForm = ({ formRef }: { formRef?: any }) => {
             label: 'Country',
             type: 'autocomplete',
             options: [
-                { label: 'india', value: 'in' },
-                { label: 'UAE', value: 'uae' },
+                { label: 'India', value: 'in' },
+                { label: 'Uae', value: 'uae' },
                 { label: 'England', value: 'eng' }
             ],
             required: true,

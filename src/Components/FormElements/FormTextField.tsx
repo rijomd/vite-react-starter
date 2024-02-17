@@ -17,7 +17,7 @@ export type TypeFormTextField = {
 }
 
 export const FormTextField: React.FC<TypeFormTextField> = (props) => {
-  const { label, placeholder, error, onChange, onBlur = () => { }, value, required, type, name, endAdornment, startAdornment, ...others } = props;
+  const { label, placeholder, error, onChange, onBlur = () => { }, value, required, type, name, endAdornment = null, startAdornment = null, ...others } = props;
 
   return (
     <TextField
@@ -33,11 +33,11 @@ export const FormTextField: React.FC<TypeFormTextField> = (props) => {
       label={label}
       placeholder={placeholder}
       required={required}
-      error={error?.isError}
-      helperText={error?.isError ? error.errorMsg : ""}
+      error={Boolean(error?.isError)}
+      helperText={error?.errorMsg || ""}
       onChange={(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange(e)}
       onBlur={(e: React.FocusEvent<HTMLInputElement>) => { onBlur(e) }}
-      InputProps={{
+      InputProps={startAdornment || startAdornment && {
         startAdornment: (
           <InputAdornment position="start">
             {startAdornment}
